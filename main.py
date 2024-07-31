@@ -27,7 +27,11 @@ Screen:
         helper_text_mode: "on_focus"
         pos_hint: {'center_x': 0.5, 'center_y': 0.4}
         size_hint_x: None
-        width: self.parent.width / 1.5  
+        width: self.parent.width / 1.5
+    
+    MDRectangleFlatButton:
+        text: 'Login'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.3}
 """
 
 Window.size = (300, 500)
