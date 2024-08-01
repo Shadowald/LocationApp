@@ -30,9 +30,19 @@ Screen:
         hint_text: "Enter Password"
         helper_text: "Please enter your password"
         helper_text_mode: "on_error"
+        password: True
         pos_hint: {'center_x': 0.5, 'center_y': 0.35}
         size_hint_x: None
         width: self.parent.width / 1.5
+    
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"center_y": .35}
+        pos: user_password.width + dp(8), 0
+        theme_text_color: "Hint"
+        on_release:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            user_password.password = False if user_password.password is True else True
     
     MDRectangleFlatButton:
         id: login_button
