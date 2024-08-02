@@ -2,6 +2,7 @@ from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.core.window import Window
 from kivy.properties import StringProperty
+import darkdetect
 
 helper = """
 Screen:
@@ -60,6 +61,9 @@ class LocationApp(MDApp):
     screen = None
 
     def build(self):
+        if darkdetect.theme() == "Dark":
+            self.theme_cls.theme_style = 'Dark'
+
         self.screen = Builder.load_string(helper)
         self.screen.ids.user_email.bind(
             on_text_validate=self.login
