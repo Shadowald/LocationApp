@@ -20,7 +20,6 @@ Screen:
     MDTextField:
         id: user_email
         hint_text: "Enter Email"
-        helper_text: "Please enter an email address"
         helper_text_mode: "on_error"
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint_x: None
@@ -29,7 +28,6 @@ Screen:
     MDTextField:
         id: user_password
         hint_text: "Enter Password"
-        helper_text: "Please enter your password"
         helper_text_mode: "on_error"
         password: True
         pos_hint: {'center_x': 0.5, 'center_y': 0.35}
@@ -59,12 +57,14 @@ class LocationApp(MDApp):
     email = StringProperty("")
     password = StringProperty("")
     screen = None
+    users_map = {'email@address.com': 'password'}
 
     def build(self):
         if darkdetect.theme() == "Dark":
             self.theme_cls.theme_style = 'Dark'
 
         self.screen = Builder.load_string(helper)
+
         self.screen.ids.user_email.bind(
             on_text_validate=self.login
         )
@@ -80,14 +80,25 @@ class LocationApp(MDApp):
     def login(self, args):
         try:
             if self.screen.ids.user_email.text == "":
+                self.screen.ids.user_email.helper_text = "Please enter an email address"
                 self.screen.ids.user_email.error = True
                 raise ValueError
+            self.screen.ids.user_email.helper_text = ""
 
             if self.screen.ids.user_password.text == "":
+                self.screen.ids.user_password.helper_text = "Please enter your password"
                 self.screen.ids.user_password.error = True
                 raise ValueError
+            self.screen.ids.user_password.helper_text = ""
 
-            # TODO: check if username and password are registered
+            if self.users_map.get(self.screen.ids.user_email.text) is None:
+                self.screen.ids.user_email.helper_text = "Your email was incorrect"
+                self.screen.ids.user_email.error = True
+                raise ValueError
+            elif self.users_map[self.screen.ids.user_email.text] != self.screen.ids.user_password.text:
+                self.screen.ids.user_password.helper_text = "Your password was incorrect"
+                self.screen.ids.user_password.error = True
+                raise ValueError
 
             self.email = self.screen.ids.user_email.text
             self.password = self.screen.ids.user_password.text
