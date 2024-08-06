@@ -57,14 +57,16 @@ class LocationApp(MDApp):
     email = StringProperty("")
     password = StringProperty("")
     screen = None
-    users_map = {'email@address.com': 'password'}
+    users_map = {'email@address.com': 'password'}   # TODO: Remove this key pair later, only for testing purposes
 
     def build(self):
+        # Set theme of the app to the set theme of the device, default theme in Kivy is 'Light'
         if darkdetect.theme() == "Dark":
             self.theme_cls.theme_style = 'Dark'
 
         self.screen = Builder.load_string(helper)
 
+        # Bind widgets to login function
         self.screen.ids.user_email.bind(
             on_text_validate=self.login
         )
