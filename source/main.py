@@ -4,6 +4,7 @@ from kivy.core.window import Window
 from kivy.properties import StringProperty
 import darkdetect
 
+# TODO: Replace logo.png with a real logo for the app
 helper = """
 Screen:
 
@@ -53,11 +54,10 @@ Window.size = (300, 500)
 
 
 class LocationApp(MDApp):
-
     email = StringProperty("")
     password = StringProperty("")
     screen = None
-    users_map = {'email@address.com': 'password'}   # TODO: Remove this key pair later, only for testing purposes
+    users_map = {}
 
     def build(self):
         # Set theme of the app to the set theme of the device, default theme in Kivy is 'Light'
@@ -80,33 +80,37 @@ class LocationApp(MDApp):
         return self.screen
 
     def login(self, args):
-        try:
-            if self.screen.ids.user_email.text == "":
-                self.screen.ids.user_email.helper_text = "Please enter an email address"
-                self.screen.ids.user_email.error = True
-                raise ValueError
-            self.screen.ids.user_email.helper_text = ""
 
-            if self.screen.ids.user_password.text == "":
-                self.screen.ids.user_password.helper_text = "Please enter your password"
-                self.screen.ids.user_password.error = True
-                raise ValueError
-            self.screen.ids.user_password.helper_text = ""
+        # Confirm the TextField for user_email and user_password are not empty
+        if self.screen.ids.user_email.text == "":
+            self.screen.ids.user_email.helper_text = "Please enter an email address"
+            self.screen.ids.user_email.error = True
+            return 1
 
-            if self.users_map.get(self.screen.ids.user_email.text) is None:
-                self.screen.ids.user_email.helper_text = "Your email was incorrect"
-                self.screen.ids.user_email.error = True
-                raise ValueError
-            elif self.users_map[self.screen.ids.user_email.text] != self.screen.ids.user_password.text:
-                self.screen.ids.user_password.helper_text = "Your password was incorrect"
-                self.screen.ids.user_password.error = True
-                raise ValueError
+        # Else there is no error, helper_text is cleared as it persists when an error is raised
+        self.screen.ids.user_email.helper_text = ""
 
-            self.email = self.screen.ids.user_email.text
-            self.password = self.screen.ids.user_password.text
+        if self.screen.ids.user_password.text == "":
+            self.screen.ids.user_password.helper_text = "Please enter your password"
+            self.screen.ids.user_password.error = True
+            return 1
 
-        except ValueError:
-            pass
+        # Else there is no error, helper_text is cleared as it persists when an error is raised
+        self.screen.ids.user_password.helper_text = ""
 
+        # Confirm user_email and user_password exist in the users_map, ie is a registered user
+        if self.users_map.get(self.screen.ids.user_email.text) is None:
+            self.screen.ids.user_email.helper_text = "Your email was incorrect"
+            self.screen.ids.user_email.error = True
+            return 2
+        elif self.users_map[self.screen.ids.user_email.text] != self.screen.ids.user_password.text:
+            self.screen.ids.user_password.helper_text = "Your password was incorrect"
+            self.screen.ids.user_password.error = True
+            return 2
 
-LocationApp().run()
+        # Login successful
+        self.email = self.screen.ids.user_email.text
+        self.password = self.screen.ids.user_password.text
+        return 0
+
+# LocationApp().run() TODO: Refactor code for main to only run app and to build in a separate file for testing purposes
