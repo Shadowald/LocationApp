@@ -1,6 +1,7 @@
 import pytest
 import source.main as main
-from kivymd.app import MDApp
+#from source.main import ScreenManager
+from source.login_screen import users_map
 
 
 class TestLocationApp:
@@ -8,10 +9,11 @@ class TestLocationApp:
     def setup_method(self, method):
         self.app = main.LocationApp()
         self.app.build()
-        self.app.users_map['email@address.com'] = 'password'
+        self.manager = main.ScreenManager()
+        users_map['email@address.com'] = 'password'
 
     def test_login_empty_email_field(self):
-        self.app.screen.ids.user_email.text = ""
+        self.manager.get_screen('Login').ids.user_email.text = ""
         result = self.app.login(None)
         assert result == 1
 
